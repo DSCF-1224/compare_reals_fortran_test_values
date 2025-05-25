@@ -1,0 +1,2 @@
+module compare_reals_fortran_test_values
+end module compare_reals_fortran_test_values
