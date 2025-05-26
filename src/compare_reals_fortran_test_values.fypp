@@ -2,33 +2,7 @@
 
     #:set MODULE_NAME = 'compare_reals_fortran_test_values'
 
-    #:set REAL_KINDS = ['real32', 'real64', 'real128']
-
-    #:set LIST_INTERFACE = &
-        [ &
-            'set_negative_huge'              , &
-            'set_negative_huge_next_up'      , &
-            'set_negative_one_next_down'     , &
-            'set_negative_one'               , &
-            'set_negative_one_next_up'       , &
-            'set_negative_epsilon_next_down' , &
-            'set_negative_epsilon'           , &
-            'set_negative_epsilon_next_up'   , &
-            'set_negative_tiny_next_down'    , &
-            'set_negative_tiny'              , &
-            'set_negative_tiny_next_up'      , &
-            'set_positive_tiny_next_down'    , &
-            'set_positive_tiny'              , &
-            'set_positive_tiny_next_up'      , &
-            'set_positive_epsilon_next_down' , &
-            'set_positive_epsilon'           , &
-            'set_positive_epsilon_next_up'   , &
-            'set_positive_one_next_down'     , &
-            'set_positive_one'               , &
-            'set_positive_one_next_up'       , &
-            'set_positive_huge_next_down'    , &
-            'set_positive_huge'                &
-        ]
+    #:include "common.fypp"
 
     #:def SUBROUTINE_NAME(fore_str, interface_name, kind, rear_str='')
     ${fore_str}$ ${interface_name}$_${kind}$${rear_str}$
