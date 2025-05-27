@@ -11,6 +11,9 @@ module compare_reals_fortran_test_values
     use, intrinsic :: ieee_arithmetic, only: ieee_signaling_nan
     use, intrinsic :: ieee_arithmetic, only: ieee_value
 
+    use, non_intrinsic :: ieee_class_fortran, only: set_ieee_negative_zero
+    use, non_intrinsic :: ieee_class_fortran, only: set_ieee_positive_zero
+
 
     implicit none
 
@@ -27,6 +30,8 @@ module compare_reals_fortran_test_values
     public  :: set_negative_tiny_next_down
     public  :: set_negative_tiny
     public  :: set_negative_tiny_next_up
+    public  :: set_ieee_negative_zero_next_down
+    public  :: set_ieee_positive_zero_next_up
     public  :: set_positive_tiny_next_down
     public  :: set_positive_tiny
     public  :: set_positive_tiny_next_up
@@ -114,6 +119,20 @@ module compare_reals_fortran_test_values
         module procedure :: set_negative_tiny_next_up_real32
         module procedure :: set_negative_tiny_next_up_real64
         module procedure :: set_negative_tiny_next_up_real128
+    end interface
+
+
+    interface set_ieee_negative_zero_next_down
+        module procedure :: set_ieee_negative_zero_next_down_real32
+        module procedure :: set_ieee_negative_zero_next_down_real64
+        module procedure :: set_ieee_negative_zero_next_down_real128
+    end interface
+
+
+    interface set_ieee_positive_zero_next_up
+        module procedure :: set_ieee_positive_zero_next_up_real32
+        module procedure :: set_ieee_positive_zero_next_up_real64
+        module procedure :: set_ieee_positive_zero_next_up_real128
     end interface
 
 
@@ -534,6 +553,70 @@ module compare_reals_fortran_test_values
         real(real128), intent(inout) :: x
 
         call set_negative_tiny(x)
+        x = ieee_next_after( x = x, y = ieee_value( x = x, class = ieee_positive_inf ) )
+
+    end subroutine
+
+
+
+
+    pure elemental subroutine set_ieee_negative_zero_next_down_real32(x)
+
+        real(real32), intent(inout) :: x
+
+        call set_ieee_negative_zero(x)
+        x = ieee_next_after( x = x, y = ieee_value( x = x, class = ieee_negative_inf ) )
+
+    end subroutine
+
+
+    pure elemental subroutine set_ieee_negative_zero_next_down_real64(x)
+
+        real(real64), intent(inout) :: x
+
+        call set_ieee_negative_zero(x)
+        x = ieee_next_after( x = x, y = ieee_value( x = x, class = ieee_negative_inf ) )
+
+    end subroutine
+
+
+    pure elemental subroutine set_ieee_negative_zero_next_down_real128(x)
+
+        real(real128), intent(inout) :: x
+
+        call set_ieee_negative_zero(x)
+        x = ieee_next_after( x = x, y = ieee_value( x = x, class = ieee_negative_inf ) )
+
+    end subroutine
+
+
+
+
+    pure elemental subroutine set_ieee_positive_zero_next_up_real32(x)
+
+        real(real32), intent(inout) :: x
+
+        call set_ieee_positive_zero(x)
+        x = ieee_next_after( x = x, y = ieee_value( x = x, class = ieee_positive_inf ) )
+
+    end subroutine
+
+
+    pure elemental subroutine set_ieee_positive_zero_next_up_real64(x)
+
+        real(real64), intent(inout) :: x
+
+        call set_ieee_positive_zero(x)
+        x = ieee_next_after( x = x, y = ieee_value( x = x, class = ieee_positive_inf ) )
+
+    end subroutine
+
+
+    pure elemental subroutine set_ieee_positive_zero_next_up_real128(x)
+
+        real(real128), intent(inout) :: x
+
+        call set_ieee_positive_zero(x)
         x = ieee_next_after( x = x, y = ieee_value( x = x, class = ieee_positive_inf ) )
 
     end subroutine

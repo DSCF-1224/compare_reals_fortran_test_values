@@ -20,6 +20,10 @@ module ${MODULE_NAME}$
     use, intrinsic :: ieee_arithmetic, only: ${ITEM}$
     #:endfor
 
+    #:for ITEM in ['set_ieee_negative_zero', 'set_ieee_positive_zero']
+    use, non_intrinsic :: ieee_class_fortran, only: ${ITEM}$
+    #:endfor
+
 
     implicit none
 
@@ -68,6 +72,10 @@ module ${MODULE_NAME}$
         x = - tiny(x)
         #:elif ITEM_INTERFACE.startswith('set_negative_tiny_')
         call set_negative_tiny(x)
+        #:elif ITEM_INTERFACE.startswith('set_ieee_negative_zero_')
+        call set_ieee_negative_zero(x)
+        #:elif ITEM_INTERFACE.startswith('set_ieee_positive_zero_')
+        call set_ieee_positive_zero(x)
         #:elif ITEM_INTERFACE == 'set_positive_tiny'
         x = tiny(x)
         #:elif ITEM_INTERFACE.startswith('set_positive_tiny_')
