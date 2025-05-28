@@ -8,6 +8,8 @@
     ${fore_str}$ ${PROGRAM_NAME}$_${kind}$
     #:enddef
 
+    #:set MAX_LENGTH_INTERFACE_NAME = max(len(s) for s in LIST_INTERFACE)
+
 #:endmute
 program ${PROGRAM_NAME}$
 
@@ -34,7 +36,7 @@ program ${PROGRAM_NAME}$
 
         print *
         #:for ITEM_INTERFACE in LIST_INTERFACE
-        call ${ITEM_INTERFACE.ljust(32)}$ (test_value); print *, '${ITEM_INTERFACE.ljust(33)}$', '${KIND.ljust(7)}$', test_value
+        call ${ITEM_INTERFACE.ljust(MAX_LENGTH_INTERFACE_NAME)}$ (test_value); print *, '${ITEM_INTERFACE.ljust(MAX_LENGTH_INTERFACE_NAME + 1)}$', '${KIND.ljust(7)}$', test_value
         #:endfor
 
     $:SUBROUTINE_NAME('end subroutine', KIND)
