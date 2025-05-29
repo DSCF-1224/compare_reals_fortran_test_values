@@ -1,0 +1,109 @@
+#:mute
+
+    #:set MODULE_NAME = 'compare_reals_fortran_test_values'
+
+    #:include "common.fypp"
+
+    #:def SUBROUTINE_NAME(fore_str, interface_name, kind, rear_str='')
+    ${fore_str}$ ${interface_name}$_${kind}$${rear_str}$
+    #:enddef
+
+#:endmute
+module ${MODULE_NAME}$
+
+
+    #:for KIND in REAL_KINDS
+    use, intrinsic :: iso_fortran_env, only: ${KIND}$
+    #:endfor
+
+    #:for ITEM in ['ieee_negative_inf' , 'ieee_next_after' , 'ieee_positive_inf' , 'ieee_signaling_nan' , 'ieee_value']
+    use, intrinsic :: ieee_arithmetic, only: ${ITEM}$
+    #:endfor
+
+    #:for ITEM in ['set_ieee_negative_zero', 'set_ieee_positive_zero']
+    use, non_intrinsic :: ieee_class_fortran, only: ${ITEM}$
+    #:endfor
+
+
+    implicit none
+
+
+    private
+    #:for ITEM_INTERFACE in LIST_INTERFACE
+    public  :: ${ITEM_INTERFACE}$
+    #:endfor
+
+    #:for ITEM_INTERFACE in LIST_INTERFACE
+
+    interface ${ITEM_INTERFACE}$
+        #:for KIND in REAL_KINDS
+        $:SUBROUTINE_NAME('    module procedure ::', ITEM_INTERFACE, KIND)
+        #:endfor
+    end interface
+
+    #:endfor
+
+
+
+    contains
+
+
+    #:for ITEM_INTERFACE in LIST_INTERFACE
+
+    #:for KIND in REAL_KINDS
+
+    $:SUBROUTINE_NAME('pure elemental subroutine', ITEM_INTERFACE, KIND, '(x)')
+
+        real(${KIND}$), intent(inout) :: x
+
+        #:if ITEM_INTERFACE == 'set_negative_huge'
+        x = - huge(x)
+        #:elif ITEM_INTERFACE.startswith('set_negative_huge_')
+        call set_negative_huge(x)
+        #:elif ITEM_INTERFACE == 'set_negative_one'
+        x = -1.0_${KIND}$
+        #:elif ITEM_INTERFACE.startswith('set_negative_one_')
+        call set_negative_one(x)
+        #:elif ITEM_INTERFACE == 'set_negative_epsilon'
+        x = - epsilon(x)
+        #:elif ITEM_INTERFACE.startswith('set_negative_epsilon_')
+        call set_negative_epsilon(x)
+        #:elif ITEM_INTERFACE == 'set_negative_tiny'
+        x = - tiny(x)
+        #:elif ITEM_INTERFACE.startswith('set_negative_tiny_')
+        call set_negative_tiny(x)
+        #:elif ITEM_INTERFACE.startswith('set_ieee_negative_zero_')
+        call set_ieee_negative_zero(x)
+        #:elif ITEM_INTERFACE.startswith('set_ieee_positive_zero_')
+        call set_ieee_positive_zero(x)
+        #:elif ITEM_INTERFACE == 'set_positive_tiny'
+        x = tiny(x)
+        #:elif ITEM_INTERFACE.startswith('set_positive_tiny_')
+        call set_positive_tiny(x)
+        #:elif ITEM_INTERFACE == 'set_positive_epsilon'
+        x = epsilon(x)
+        #:elif ITEM_INTERFACE.startswith('set_positive_epsilon_')
+        call set_positive_epsilon(x)
+        #:elif ITEM_INTERFACE == 'set_positive_one'
+        x = 1.0_${KIND}$
+        #:elif ITEM_INTERFACE.startswith('set_positive_one_')
+        call set_positive_one(x)
+        #:elif ITEM_INTERFACE == 'set_positive_huge'
+        x = huge(x)
+        #:elif ITEM_INTERFACE.startswith('set_positive_huge_')
+        call set_positive_huge(x)
+        #:else
+            #:stop 'The implementation is required: {}'.format(ITEM_INTERFACE)
+        #:endif
+        #:if ITEM_INTERFACE.endswith('_next_down')
+        x = ieee_next_after( x = x, y = ieee_value( x = x, class = ieee_negative_inf ) )
+        #:elif ITEM_INTERFACE.endswith('_next_up')
+        x = ieee_next_after( x = x, y = ieee_value( x = x, class = ieee_positive_inf ) )
+        #:endif
+
+    end subroutine
+
+    #:endfor
+
+    #:endfor
+end module ${MODULE_NAME}$

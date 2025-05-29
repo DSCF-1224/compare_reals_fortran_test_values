@@ -1,0 +1,45 @@
+#:mute
+
+    #:include '../src/common.fypp'
+
+    #:set PROGRAM_NAME = 'demo'
+
+    #:def SUBROUTINE_NAME(fore_str, kind)
+    ${fore_str}$ ${PROGRAM_NAME}$_${kind}$
+    #:enddef
+
+    #:set MAX_LENGTH_INTERFACE_NAME = max(len(s) for s in LIST_INTERFACE)
+
+#:endmute
+program ${PROGRAM_NAME}$
+
+    #:for KIND in REAL_KINDS
+    use,     intrinsic :: iso_fortran_env                   , only: ${KIND}$
+    #:endfor
+    use, non_intrinsic :: compare_reals_fortran_test_values
+
+
+    implicit none
+
+    #:for KIND in REAL_KINDS
+    $:SUBROUTINE_NAME('call', KIND)
+    #:endfor
+
+
+    contains
+
+    #:for KIND in REAL_KINDS
+
+    $:SUBROUTINE_NAME('subroutine', KIND)
+
+        real(${KIND}$) :: test_value
+
+        print *
+        #:for ITEM_INTERFACE in LIST_INTERFACE
+        call ${ITEM_INTERFACE.ljust(MAX_LENGTH_INTERFACE_NAME)}$ (test_value); print *, '${ITEM_INTERFACE.ljust(MAX_LENGTH_INTERFACE_NAME + 1)}$', '${KIND.ljust(7)}$', test_value
+        #:endfor
+
+    $:SUBROUTINE_NAME('end subroutine', KIND)
+
+    #:endfor
+end program ${PROGRAM_NAME}$
